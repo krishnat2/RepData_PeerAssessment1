@@ -26,7 +26,7 @@ activityData$date <- as.Date(activityData$date)
 ```{r plot1}
 library(ggplot2)
 
-stepsPerDay <- aggregate(steps~date, activityData, sum, na.action = na.omit)
+stepsPerDay <- aggregate(steps~date, activityData, sum, na.action=na.pass, na.rm=TRUE)
 plot1 <- ggplot(stepsPerDay, aes(x=steps)) +
   geom_histogram(binwidth = 1000, color="black", fill = "steelblue") +
   theme_bw(base_size = 11, base_family = "") + 
@@ -36,8 +36,8 @@ plot1 <- ggplot(stepsPerDay, aes(x=steps)) +
 
 print(plot1)
 
-meanStepsPerDay <- mean(stepsPerDay$steps, na.rm = TRUE)
-medianStepsPerDay <- median(stepsPerDay$steps, na.rm = TRUE)
+meanStepsPerDay <- mean(stepsPerDay$steps)
+medianStepsPerDay <- median(stepsPerDay$steps)
 ```
 
 Mean Steps per Day are `r format(round(meanStepsPerDay,digits=4),nsmall=4)`.
@@ -50,8 +50,8 @@ Median Steps per Day are `r format(round(medianStepsPerDay,digits=4),nsmall=4)`.
 ```{r plot2}
 
 averageDailyActivity <- aggregate(x=list(steps=activityData$steps), 
-                                  by= list(interval=activityData$interval),
-                                  mean, na.rm=TRUE)
+                                  by=list(interval=activityData$interval),
+                                  mean, na.action=na.pass, na.rm=TRUE)
 plot2 <- ggplot(averageDailyActivity, aes(x=interval, y=steps)) + 
   geom_line(color = "steelblue") +
   theme_bw(base_size = 11, base_family = "") + 
@@ -93,7 +93,7 @@ filledActivityData$steps <- mapply(fill.value, filledActivityData$steps, filledA
 Now using the filledActivityData we plot the histogram and compute the mean and median:
 
 ```{r plot3}
-stepsPerDayForFilled <- aggregate(steps~date, filledActivityData, sum, na.action = na.omit)
+stepsPerDayForFilled <- aggregate(steps~date, filledActivityData, sum, na.action=na.pass, na.rm=TRUE)
 plot3 <- ggplot(stepsPerDayForFilled, aes(x=steps)) +
   geom_histogram(binwidth = 1000, color="black", fill = "steelblue") +
   theme_bw(base_size = 11, base_family = "") + 
@@ -102,8 +102,8 @@ plot3 <- ggplot(stepsPerDayForFilled, aes(x=steps)) +
        title="Total number of steps taken Per Day For Filled Data")
 
 print(plot3)
-meanStepsPerDayForFilled <- mean(stepsPerDayForFilled$steps, na.rm = TRUE)
-medianStepsPerDayForFilled <- median(stepsPerDayForFilled$steps, na.rm = TRUE)
+meanStepsPerDayForFilled <- mean(stepsPerDayForFilled$steps)
+medianStepsPerDayForFilled <- median(stepsPerDayForFilled$steps)
 ```
 
 Mean Steps per Day are `r  format(round(meanStepsPerDayForFilled, digits=4), nsmall=4)`.

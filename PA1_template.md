@@ -23,7 +23,7 @@ activityData$date <- as.Date(activityData$date)
 ```r
 library(ggplot2)
 
-stepsPerDay <- aggregate(steps~date, activityData, sum, na.action = na.omit)
+stepsPerDay <- aggregate(steps~date, activityData, sum, na.action=na.pass, na.rm=TRUE)
 plot1 <- ggplot(stepsPerDay, aes(x=steps)) +
   geom_histogram(binwidth = 1000, color="black", fill = "steelblue") +
   theme_bw(base_size = 11, base_family = "") + 
@@ -37,13 +37,13 @@ print(plot1)
 ![](PA1_template_files/figure-html/plot1-1.png)<!-- -->
 
 ```r
-meanStepsPerDay <- mean(stepsPerDay$steps, na.rm = TRUE)
-medianStepsPerDay <- median(stepsPerDay$steps, na.rm = TRUE)
+meanStepsPerDay <- mean(stepsPerDay$steps)
+medianStepsPerDay <- median(stepsPerDay$steps)
 ```
 
-Mean Steps per Day are 10766.1887.
+Mean Steps per Day are 9354.2295.
 
-Median Steps per Day are 10765.0000.
+Median Steps per Day are 10395.0000.
 
 
 ## What is the average daily activity pattern?
@@ -51,8 +51,8 @@ Median Steps per Day are 10765.0000.
 
 ```r
 averageDailyActivity <- aggregate(x=list(steps=activityData$steps), 
-                                  by= list(interval=activityData$interval),
-                                  mean, na.rm=TRUE)
+                                  by=list(interval=activityData$interval),
+                                  mean, na.action=na.pass, na.rm=TRUE)
 plot2 <- ggplot(averageDailyActivity, aes(x=interval, y=steps)) + 
   geom_line(color = "steelblue") +
   theme_bw(base_size = 11, base_family = "") + 
@@ -101,7 +101,7 @@ Now using the filledActivityData we plot the histogram and compute the mean and 
 
 
 ```r
-stepsPerDayForFilled <- aggregate(steps~date, filledActivityData, sum, na.action = na.omit)
+stepsPerDayForFilled <- aggregate(steps~date, filledActivityData, sum, na.action=na.pass, na.rm=TRUE)
 plot3 <- ggplot(stepsPerDayForFilled, aes(x=steps)) +
   geom_histogram(binwidth = 1000, color="black", fill = "steelblue") +
   theme_bw(base_size = 11, base_family = "") + 
@@ -115,8 +115,8 @@ print(plot3)
 ![](PA1_template_files/figure-html/plot3-1.png)<!-- -->
 
 ```r
-meanStepsPerDayForFilled <- mean(stepsPerDayForFilled$steps, na.rm = TRUE)
-medianStepsPerDayForFilled <- median(stepsPerDayForFilled$steps, na.rm = TRUE)
+meanStepsPerDayForFilled <- mean(stepsPerDayForFilled$steps)
+medianStepsPerDayForFilled <- median(stepsPerDayForFilled$steps)
 ```
 
 Mean Steps per Day are 10766.1887.
