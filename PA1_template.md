@@ -1,16 +1,12 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 
 ## Loading and preprocessing the data
 
 We assume the Dataset is already download and available to use, if its still in the ZIP format we unzip it using the R unzip method. The CSV is then read into *data* variable.
 
-```{r loadData}
+
+```r
 dataFileName <- './activity.csv'
 if(!file.exists(dataFileName)) {
   unzip('./activity.zip', exdir = '.', unzip = 'internal', overwrite = TRUE)
@@ -23,7 +19,8 @@ activityData$date <- as.Date(activityData$date)
 ```
 
 ## What is mean total number of steps taken per day?
-```{r plot1}
+
+```r
 library(ggplot2)
 
 stepsPerDay <- aggregate(steps~date, activityData, sum, na.action = na.omit)
@@ -35,20 +32,24 @@ plot1 <- ggplot(stepsPerDay, aes(x=steps)) +
        title="Total number of steps taken Per Day")
 
 print(plot1)
+```
 
+![](PA1_template_files/figure-html/plot1-1.png)<!-- -->
+
+```r
 meanStepsPerDay <- mean(stepsPerDay$steps, na.rm = TRUE)
 medianStepsPerDay <- median(stepsPerDay$steps, na.rm = TRUE)
 ```
 
-Mean Steps per Day are `r format(round(meanStepsPerDay,digits=4),nsmall=4)`.
+Mean Steps per Day are 10766.1887.
 
-Median Steps per Day are `r format(round(medianStepsPerDay,digits=4),nsmall=4)`.
+Median Steps per Day are 10765.0000.
 
 
 ## What is the average daily activity pattern?
 
-```{r plot2}
 
+```r
 averageDailyActivity <- aggregate(x=list(steps=activityData$steps), 
                                   by= list(interval=activityData$interval),
                                   mean, na.rm=TRUE)
@@ -61,23 +62,29 @@ plot2 <- ggplot(averageDailyActivity, aes(x=interval, y=steps)) +
 
 
 print(plot2)
+```
 
+![](PA1_template_files/figure-html/plot2-1.png)<!-- -->
+
+```r
 intervalWithMaxSteps <- averageDailyActivity[which.max(averageDailyActivity$steps),]
 ```
 
-Interval `r intervalWithMaxSteps$interval`  on average across all the days in the dataset, contains the maximum number of steps, `r intervalWithMaxSteps$steps`.
+Interval 835  on average across all the days in the dataset, contains the maximum number of steps, 206.1698113.
 
 ## Imputing missing values
 
-```{r missingValuesData}
+
+```r
 missingValues <- is.na(activityData$steps)
 ```
 
-Total Number of missing values are `r table(missingValues)["TRUE"]`
+Total Number of missing values are 2304
 
 
 We will replace each missing value with the mean of the 5-minute interval.
-```{r filledData}
+
+```r
 fill.value <- function(steps, interval) {
     filled <- NA
     if (!is.na(steps))
@@ -92,7 +99,8 @@ filledActivityData$steps <- mapply(fill.value, filledActivityData$steps, filledA
 
 Now using the filledActivityData we plot the histogram and compute the mean and median:
 
-```{r plot3}
+
+```r
 stepsPerDayForFilled <- aggregate(steps~date, filledActivityData, sum, na.action = na.omit)
 plot3 <- ggplot(stepsPerDayForFilled, aes(x=steps)) +
   geom_histogram(binwidth = 1000, color="black", fill = "steelblue") +
@@ -102,19 +110,25 @@ plot3 <- ggplot(stepsPerDayForFilled, aes(x=steps)) +
        title="Total number of steps taken Per Day For Filled Data")
 
 print(plot3)
+```
+
+![](PA1_template_files/figure-html/plot3-1.png)<!-- -->
+
+```r
 meanStepsPerDayForFilled <- mean(stepsPerDayForFilled$steps, na.rm = TRUE)
 medianStepsPerDayForFilled <- median(stepsPerDayForFilled$steps, na.rm = TRUE)
 ```
 
-Mean Steps per Day are `r  format(round(meanStepsPerDayForFilled, digits=4), nsmall=4)`.
+Mean Steps per Day are 10766.1887.
 
-Median Steps per Day are `r format(round(medianStepsPerDayForFilled, digits=4), nsmall=4)`.
+Median Steps per Day are 10766.1887.
 
 Both Mean and Median values are higher, reason begin in the original data, there were days with NA step values, hence resulting the total steps for these days as 0. Onces there values were replaced with the average 5-minute interval value, the number of 0s dropped and inventually increasing the mean and median number of steps.
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
-```{r plot4}
+
+```r
 filledActivityData$DayType <- format(filledActivityData$date, "%u") %in% c(6, 7)
 filledActivityData$DayType[filledActivityData$DayType == FALSE] <- "Weekday"
 filledActivityData$DayType[filledActivityData$DayType == TRUE] <- "Weekend"
@@ -131,3 +145,5 @@ plot4 <- ggplot(averagePerIntervalPerDaytype, aes(interval, steps)) +
 
 print(plot4)
 ```
+
+![](PA1_template_files/figure-html/plot4-1.png)<!-- -->
